@@ -1,0 +1,13 @@
+.form-field {
+    &__wrapper {
+        margin-bottom: 1em;
+        position: relative;
+    }
+
+    &__label {
+        display: block;
+        font-size: .75em;
+        margin-bottom: .5em;
+        text-transform: uppercase;
+    }
+}
