@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import math from 'mathjs';
 import './app.css';
 
 import FormField from './js/form-field.js';
@@ -63,10 +64,11 @@ class WhatDoIOwe extends Component {
     }
 
     savePayer = () => {
+        const {name, amount} = this.state.payer;
         this.setState((prevState) => {
             return {
                 payer: {name: '', amount: 0},
-                payers: [...prevState.payers, this.state.payer],
+                payers: [...prevState.payers, {name, amount: math.eval(amount)}],
                 showPayerModal: false
             }
         });
@@ -129,7 +131,7 @@ class WhatDoIOwe extends Component {
                         </div>
                     </div>
 
-                {grandTotal ? (
+                {grandTotal && remainingBill.toFixed(2) > 0 ? (
                     <button className="app__button" onClick={this.showPayerModal}>add payer</button>
                 ) : null}
 
