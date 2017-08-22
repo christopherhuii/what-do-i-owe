@@ -1,0 +1,23 @@
+.modal {
+    background-color: rgba(0, 0, 0, 0.75);
+    bottom: 0;
+    display: none;
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+
+    &.show {
+        display: block;
+    }
+
+    &__content {
+        background-color: white;
+        left: 50%;
+        margin: 0 auto;
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+    }
+}

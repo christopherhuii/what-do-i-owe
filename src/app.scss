@@ -15,7 +15,7 @@
         width: 100%;
     }
 
-    &__split-btn {
+    &__button {
         background-color: transparent;
         border: 1px solid #000000;
         display: inline-block;
@@ -36,6 +36,45 @@
         position: absolute;
         right: 10px;
         z-index: -1;
+    }
+
+    &__edit-payer-container {
+        margin: 1em;
+    }
+
+    &__receipt-grid {
+        display: none;
+        &.show {
+            display: block;
+        }
+    }
+    &__receipt-row {
+        display: flex;
+        justify-content: space-around;
+
+        &.hide {
+            display: none;
+        }
+
+        &.total-amount {
+            border-bottom: 1px solid black;
+            margin-bottom: 1em;
+            padding-bottom: 5px;
+        }
+    }
+
+    &__receipt-cell {
+        font-size: .8em;
+        letter-spacing: .5px;
+        text-transform: uppercase;
+
+        &.negative {
+            color: red;
+        }
+
+        &.positive {
+            color: green;
+        }
     }
 }
 
