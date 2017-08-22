@@ -23,7 +23,7 @@ class WhatDoIOwe extends Component {
     }
 
     calculateGrandTotal = () => {
-        const {total, tax, isTipIncluded, tip, payers} = this.state;
+        const {total, tax, isTipIncluded, tip} = this.state;
         const subtotal = total - tax;
         const grandTotalValue = isTipIncluded ? total : total + (subtotal * (tip / 100));
 
@@ -73,15 +73,18 @@ class WhatDoIOwe extends Component {
     }
 
     render() {
-        const {isTipIncluded, tip, grandTotal, payer, payers, showPayerModal} = this.state;
+        const {isTipIncluded, total, tax, tip, grandTotal, payer, payers, showPayerModal} = this.state;
 
         let totalPaid = 0;
+        const subtotal = total - tax - (isTipIncluded ? tip : ((total - tax) * (tip / 100)));
         const payerList = payers.map((payer) => {
-            totalPaid += parseFloat(payer.amount);
+            const payerAmount = parseFloat(payer.amount);
+            const amountWithTaxAndTip = payerAmount + (payerAmount / subtotal * tax) + (isTipIncluded ? payerAmount / subtotal * tip : payerAmount * (tip / 100));
+            totalPaid += amountWithTaxAndTip;
             return (
                 <div className="app__receipt-row">
                     <p className="app__receipt-cell">{payer.name}</p>
-                    <p className="app__receipt-cell positive">{payer.amount}</p>
+                    <p className="app__receipt-cell positive">{`$${amountWithTaxAndTip.toFixed(2)}`}</p>
                 </div>
             );
         });
@@ -117,12 +120,12 @@ class WhatDoIOwe extends Component {
                     <div className={`app__receipt-grid ${grandTotal ? 'show' : ''}`}>
                         <div className={`app__receipt-row total-amount`}>
                             <p className=" app__receipt-cell">Total</p>
-                            <p className="app__receipt-cell negative">{grandTotal}</p>
+                            <p className="app__receipt-cell negative">{`-$${grandTotal.toFixed(2)}`}</p>
                         </div>
                         {payerList}
                         <div className={`app__receipt-row ${payers.length > 0 ? '' : 'hide'}`}>
                             <p className="app__receipt-cell">remaining</p>
-                            <p className={`app__receipt-cell ${remainingBill > 0 ? 'negative' : 'positive'}`}>{remainingBill}</p>
+                            <p className={`app__receipt-cell ${remainingBill.toFixed(2) > 0 ? 'negative' : 'positive'}`}>{remainingBill.toFixed(2)}</p>
                         </div>
                     </div>
 
