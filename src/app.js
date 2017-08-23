@@ -145,7 +145,7 @@ class WhatDoIOwe extends Component {
                             </FormField>
 
                             <FormField label="Payer Amount">
-                                <input className="app__input" type="number" step="0.01" onChange={e => this.handleInputChange('payer', {name: payer.name, amount: e.target.value})} type="text"  value={payer.amount} />
+                                <input className="app__input" type="number" step="0.01" onChange={e => this.handleInputChange('payer', {name: payer.name, amount: e.target.value})} value={payer.amount} />
                             </FormField>
                         </div>
 
