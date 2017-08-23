@@ -1,0 +1,61 @@
+.app {
+  margin: 0 1em;
+  text-align: center; }
+  .app__header {
+    font-size: 2em;
+    font-weight: 300;
+    text-align: center;
+    text-transform: uppercase; }
+  .app__input {
+    background-color: #ffffff;
+    box-sizing: border-box;
+    padding: 5px 10px;
+    width: 100%; }
+  .app__button {
+    background-color: transparent;
+    border: 1px solid #000000;
+    display: inline-block;
+    letter-spacing: .5px;
+    padding: 5px 10px;
+    text-transform: uppercase; }
+    .app__button:hover {
+      cursor: pointer; }
+  .app__placeholder {
+    bottom: 0;
+    font-size: .9em;
+    line-height: 1.7em;
+    opacity: .5;
+    position: absolute;
+    right: 10px;
+    z-index: -1; }
+  .app__edit-payer-container {
+    margin: 1em; }
+  .app__receipt-grid {
+    display: none; }
+    .app__receipt-grid.show {
+      display: block; }
+  .app__receipt-row {
+    display: flex;
+    justify-content: space-around; }
+    .app__receipt-row.hide {
+      display: none; }
+    .app__receipt-row.total-amount {
+      border-bottom: 1px solid black;
+      margin-bottom: 1em;
+      padding-bottom: 5px; }
+  .app__receipt-cell {
+    flex: 1;
+    font-size: .8em;
+    letter-spacing: .5px;
+    text-transform: uppercase; }
+    .app__receipt-cell.negative {
+      color: red; }
+    .app__receipt-cell.positive {
+      color: green; }
+
+@media (min-width: 767px) {
+  .app {
+    margin: 0 auto;
+    max-width: 1020px; }
+    .app__header {
+      font-size: 3em; } }

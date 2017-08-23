@@ -1,0 +1,26 @@
+.modal {
+  background-color: rgba(0, 0, 0, 0.75);
+  bottom: 0;
+  display: none;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0; }
+  .modal.show {
+    display: block; }
+  .modal__close-btn {
+    background-color: #ffffff;
+    border: 0;
+    position: absolute;
+    right: 1em;
+    top: 1em; }
+    .modal__close-btn:hover {
+      cursor: pointer; }
+  .modal__content {
+    background-color: white;
+    left: 50%;
+    margin: 0 auto;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%; }
