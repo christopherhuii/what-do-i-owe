@@ -97,11 +97,11 @@ class WhatDoIOwe extends Component {
                 <h1 className="app__header">what do i owe?</h1>
 
                 <FormField label="Total">
-                  <input className="app__input" type="number" onChange={e => this.handleInputChange('total', parseFloat(e.target.value))} />
+                  <input className="app__input" type="number" step="0.01" onChange={e => this.handleInputChange('total', parseFloat(e.target.value))} />
                 </FormField>
 
                 <FormField label="Tax">
-                  <input className="app__input" type="number" onChange={e => this.handleInputChange('tax', parseFloat(e.target.value))}/>
+                  <input className="app__input" type="number" step="0.01" onChange={e => this.handleInputChange('tax', parseFloat(e.target.value))}/>
                 </FormField>
 
                 <FormField label="Is tip included?">
@@ -112,7 +112,7 @@ class WhatDoIOwe extends Component {
                 </FormField>
 
                 <FormField label={isTipIncluded ? "Included Tip" : "Tip"}>
-                    <input className="app__input" type="number" onChange={e => this.handleInputChange('tip', parseFloat(e.target.value))} value={tip}/>
+                    <input className="app__input" type="number" step="0.01" onChange={e => this.handleInputChange('tip', parseFloat(e.target.value))} value={tip}/>
                     <span className="app__placeholder">{isTipIncluded ? "$" : "%"}</span>
                 </FormField>
 
@@ -145,7 +145,7 @@ class WhatDoIOwe extends Component {
                             </FormField>
 
                             <FormField label="Payer Amount">
-                                <input className="app__input" onChange={e => this.handleInputChange('payer', {name: payer.name, amount: e.target.value})} type="text"  value={payer.amount} />
+                                <input className="app__input" type="number" step="0.01" onChange={e => this.handleInputChange('payer', {name: payer.name, amount: e.target.value})} type="text"  value={payer.amount} />
                             </FormField>
                         </div>
 
