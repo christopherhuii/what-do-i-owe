@@ -135,7 +135,7 @@ class WhatDoIOwe extends Component {
                     <button className="app__button" onClick={this.showPayerModal}>add payer</button>
                 ) : null}
 
-                <Modal show={showPayerModal}>
+                <Modal show={showPayerModal} onClose={this.closePayerModal}>
                     <div className="app__edit-payer-container">
                         <p className="app__edit-payer-heading">Edit Payer</p>
 

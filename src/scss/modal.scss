@@ -11,6 +11,18 @@
         display: block;
     }
 
+    &__close-btn {
+        background-color: #ffffff;
+        border: 0;
+        position: absolute;
+        right: 1em;
+        top: 1em;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
     &__content {
         background-color: white;
         left: 50%;
