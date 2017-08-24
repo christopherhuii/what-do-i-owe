@@ -89,8 +89,12 @@ class WhatDoIOwe extends Component {
         });
     }
 
-    deletePayer = () => {
-
+    deletePayer = (index) => {
+        this.setState((prevState) => {
+            return {
+                payers: prevState.payers.filter((_, i) => i !== index)
+            }
+        });
     }
 
     render() {
@@ -108,7 +112,7 @@ class WhatDoIOwe extends Component {
                     <p className="app__receipt-cell positive right">{`$${amountWithTaxAndTip.toFixed(2)}`}</p>
                     <p className="app__receipt-cell right">
                         <span className="app__table-action-btn" onClick={() => this.editPayer(i)}>&#x270E;</span>
-                        <span className="app__table-action-btn" onClick={this.deletePayer}>&#10005;</span>
+                        <span className="app__table-action-btn" onClick={() => this.deletePayer(i)}>&#10005;</span>
                     </p>
                 </div>
             );
