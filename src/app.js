@@ -47,10 +47,6 @@ class WhatDoIOwe extends Component {
         });
     }
 
-    handleEvaluateInput = (e) => {
-        console.log(e.target.value);
-    }
-
     showPayerModal = () => {
         this.setState({
             showPayerModal: true
