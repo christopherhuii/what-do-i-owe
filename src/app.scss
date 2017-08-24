@@ -45,10 +45,12 @@
 
     &__receipt-grid {
         display: none;
+        margin: 1em 0;
         &.show {
             display: block;
         }
     }
+
     &__receipt-row {
         display: flex;
         justify-content: space-around;
@@ -68,6 +70,7 @@
         flex: 1;
         font-size: .8em;
         letter-spacing: .5px;
+        margin: 5px 0;
         text-transform: uppercase;
 
         &.negative {
@@ -77,6 +80,18 @@
         &.positive {
             color: green;
         }
+
+        &.left {
+            text-align: left;
+        }
+
+        &.right {
+            text-align: right;
+        }
+    }
+
+    &__table-action-btn + &__table-action-btn {
+        padding-left: 10px;
     }
 
     input::-webkit-outer-spin-button,

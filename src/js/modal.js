@@ -4,7 +4,7 @@ export default function Modal({show, children, onClose}) {
     return (
         <div className={`modal ${show ? 'show': ''}`}>
             <div className="modal__content">
-                <button className="modal__close-btn" onClick={onClose}>X</button>
+                <button className="modal__close-btn" onClick={onClose}>&#10005;</button>
                 {children}
             </div>
         </div>
