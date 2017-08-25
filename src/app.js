@@ -45,7 +45,7 @@ class WhatDoIOwe extends Component {
 
     handleNumberFieldChange = (e) => {
         this.setState({
-            [e.target.name]: parseFloat(e.target.value),
+            [e.target.name]: parseFloat(e.target.value || 0),
         });
     }
 
@@ -135,7 +135,7 @@ class WhatDoIOwe extends Component {
             return (
                 <div className="app__receipt-row">
                     <p className="app__receipt-cell left">{payer.name}</p>
-                    <p className="app__receipt-cell positive right">{amountWithTaxAndTip.toFixed(2)}</p>
+                    <p className="app__receipt-cell positive right">{`$${amountWithTaxAndTip.toFixed(2)}`}</p>
                     <p className="app__receipt-cell right">
                         <span className="app__table-action-btn" onClick={() => this.editPayer(i)}>&#x270E;</span>
                         <span className="app__table-action-btn" onClick={() => this.deletePayer(i)}>&#10005;</span>
@@ -150,35 +150,61 @@ class WhatDoIOwe extends Component {
                 <h1 className="app__header">what do i owe?</h1>
 
                 <FormField label="Total">
-                    <input className="app__input" type="number" step="0.01" name="total" onChange={this.handleNumberFieldChange} />
+                    <input
+                        className="app__input"
+                        name="total"
+                        onChange={this.handleNumberFieldChange}
+                        step="0.01"
+                        type="number"
+                    />
                 </FormField>
 
                 <FormField label="Tax">
-                    <input className="app__input" type="number" step="0.01" name="tax" onChange={this.handleNumberFieldChange}/>
+                    <input
+                        className="app__input"
+                        name="tax"
+                        onChange={this.handleNumberFieldChange}
+                        step="0.01"
+                        type="number"
+                    />
                 </FormField>
 
                 <FormField label="Is tip included?">
-                    <select className="app__input" defaultValue="" name="isTipIncluded" onChange={this.handleTipChange}>
+                    <select
+                        className="app__input"
+                        defaultValue=""
+                        name="isTipIncluded"
+                        onChange={this.handleTipChange}
+                    >
                         <option value="true">Yes</option>
                         <option value="">No</option>
                     </select>
                 </FormField>
 
                 <FormField label={isTipIncluded ? "Included Tip" : "Tip"}>
-                    <input className="app__input" type="number" step="0.01" name = "tip" onChange={this.handleNumberFieldChange} value={tip}/>
-                    <span className="app__placeholder">{isTipIncluded ? "$" : "%"}</span>
+                    <input
+                        className="app__input"
+                        name="tip"
+                        onChange={this.handleNumberFieldChange}
+                        step="0.01"
+                        type="number"
+                        value={tip}
+                    />
+                    <span className="app__placeholder">{isTipIncluded ? '$' : '%'}</span>
                 </FormField>
 
                     <div className={`app__receipt-grid ${grandTotal ? 'show' : ''}`}>
                         <div className={`app__receipt-row total-amount`}>
                             <p className=" app__receipt-cell left">Total</p>
-                            <p className="app__receipt-cell negative right">{`-${grandTotal.toFixed(2)}`}</p>
+                            <p className="app__receipt-cell negative right">{`-$${grandTotal.toFixed(2)}`}</p>
                             <p className="app__receipt-cell" />
                         </div>
                         {payerList}
                         <div className={`app__receipt-row ${payers.length > 0 ? '' : 'hide'}`}>
                             <p className="app__receipt-cell left">remaining</p>
-                            <p className={`app__receipt-cell ${remainingBill.toFixed(2) > 0 ? 'negative' : 'positive'} right`}>{remainingBill.toFixed(2)}</p>
+                            <p className={`app__receipt-cell ${remainingBill.toFixed(2) > 0 ? 'negative' : 'positive'} right`}>
+                                {remainingBill > 0 ? `-$${remainingBill.toFixed(2)}` : `$${remainingBill.toFixed(2)}`}
+                            </p>
                             <p className="app__receipt-cell" />
                         </div>
                     </div>
@@ -193,11 +219,22 @@ class WhatDoIOwe extends Component {
 
                         <div className="app__payer-fields">
                             <FormField label="Payer Name">
-                                <input className="app__input" type="text" onChange={e => this.handlePayerChange('name', e.target.value)} value={payer.name} />
+                                <input
+                                    className="app__input"
+                                    onChange={e => this.handlePayerChange('name', e.target.value)}
+                                    type="text"
+                                    value={payer.name}
+                                />
                             </FormField>
 
                             <FormField label="Payer Amount">
-                                <input className="app__input"  type="text" step="0.01" onChange={e => this.handlePayerChange('amount', e.target.value)} value={payer.amount} />
+                                <input
+                                    className="app__input"
+                                    onChange={e => this.handlePayerChange('amount', e.target.value)}
+                                    step="0.01"
+                                    type="text"
+                                    value={payer.amount}
+                                />
                             </FormField>
                         </div>
 
