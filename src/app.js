@@ -147,7 +147,7 @@ class WhatDoIOwe extends Component {
 
         return (
             <div className="app">
-                <h1 className="app__header">what do i owe?</h1>
+                <a href="/"><h1 className="app__header">what do i owe?</h1></a>
 
                 <FormField label="Total">
                     <input
