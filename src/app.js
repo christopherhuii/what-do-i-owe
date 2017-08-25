@@ -7,11 +7,17 @@ import Modal from './js/modal.js';
 
 class WhatDoIOwe extends Component {
 
-    // Total: Total Bill
-    // Tax: Used to calculate tax rate
+    // total: total + tax
+    // tax: used to calculate tax rate
     // isTipIncluded: Used to determine if tax is already included in the bill; whether it's cash or percentage value
-    // tip: Tip Amount; can be dollar or percentage amount
-    // grandTotal: Bill with tax and tip
+    // tip: tip amount; can be dollar or percentage amount
+    // grandTotal: total + tax + tip
+
+    // payers: array of payer
+    // showPayerModal: indicates whether the payer model is displayed
+    // payer: {name: 'John Doe', amount: 100}
+    // editPayerIndex: index of the active payer inside of payers
+
     state = {
         total: 0,
         tax: 0,
@@ -26,24 +32,41 @@ class WhatDoIOwe extends Component {
 
     calculateGrandTotal = () => {
         const {total, tax, isTipIncluded, tip} = this.state;
-        const subtotal = total - tax;
-        const grandTotalValue = isTipIncluded ? total : total + (subtotal * (tip / 100));
 
+        if (total) {
+            const subtotal = total - tax;
+            const grandTotalValue = isTipIncluded ? total : total + (subtotal * (tip / 100));
+
+            return grandTotalValue;
+        }
+
+        return 0;
+    }
+
+    handleNumberFieldChange = (e) => {
         this.setState({
-            grandTotal: grandTotalValue,
+            [e.target.name]: parseFloat(e.target.value || 0),
         });
     }
 
-    handleInputChange = (field, value) => {
+    handleTipChange = (e) => {
         this.setState({
-            [field]: value
-        })
+            [e.target.name]: e.target.value,
+            tip: e.target.value ? 0 : 15,
+        });
     }
 
-    handleTipChange = (isTipIncluded) => {
+    handlePayerChange = (name, value) => {
+        this.setState((prevState) => {
+            return {
+                payer: {...prevState.payer, [name]: value}
+            }
+        });
+    }
+
+    handleGrandTotalChange = () => {
         this.setState({
-            isTipIncluded,
-            tip: isTipIncluded ? 0 : 15
+            grandTotal: this.calculateGrandTotal()
         });
     }
 
@@ -93,6 +116,13 @@ class WhatDoIOwe extends Component {
         });
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        const {total, tax, tip, isTipIncluded} = this.state;
+        if(prevState.total !== total || prevState.tax !== tax || prevState.isTipIncluded !== isTipIncluded || prevState.tip !== tip) {
+            this.handleGrandTotalChange();
+        }
+    }
+
     render() {
         const {isTipIncluded, total, tax, tip, grandTotal, payer, payers, showPayerModal} = this.state;
 
@@ -120,26 +150,48 @@ class WhatDoIOwe extends Component {
                 <h1 className="app__header">what do i owe?</h1>
 
                 <FormField label="Total">
-                    <input className="app__input" type="number" step="0.01" onChange={e => this.handleInputChange('total', parseFloat(e.target.value))} />
+                    <input
+                        className="app__input"
+                        name="total"
+                        onChange={this.handleNumberFieldChange}
+                        step="0.01"
+                        type="number"
+                    />
                 </FormField>
 
                 <FormField label="Tax">
-                    <input className="app__input" type="number" step="0.01" onChange={e => this.handleInputChange('tax', parseFloat(e.target.value))}/>
+                    <input
+                        className="app__input"
+                        name="tax"
+                        onChange={this.handleNumberFieldChange}
+                        step="0.01"
+                        type="number"
+                    />
                 </FormField>
 
                 <FormField label="Is tip included?">
-                    <select className="app__input" defaultValue="" onChange={e => this.handleTipChange(e.target.value)}>
+                    <select
+                        className="app__input"
+                        defaultValue=""
+                        name="isTipIncluded"
+                        onChange={this.handleTipChange}
+                    >
                         <option value="true">Yes</option>
                         <option value="">No</option>
                     </select>
                 </FormField>
 
                 <FormField label={isTipIncluded ? "Included Tip" : "Tip"}>
-                    <input className="app__input" type="number" step="0.01" onChange={e => this.handleInputChange('tip', parseFloat(e.target.value))} value={tip}/>
-                    <span className="app__placeholder">{isTipIncluded ? "$" : "%"}</span>
+                    <input
+                        className="app__input"
+                        name="tip"
+                        onChange={this.handleNumberFieldChange}
+                        step="0.01"
+                        type="number"
+                        value={tip}
+                    />
+                    <span className="app__placeholder">{isTipIncluded ? '$' : '%'}</span>
                 </FormField>
-
-                <button className="app__button" onClick={this.calculateGrandTotal}>split</button>
 
                     <div className={`app__receipt-grid ${grandTotal ? 'show' : ''}`}>
                         <div className={`app__receipt-row total-amount`}>
@@ -150,7 +202,9 @@ class WhatDoIOwe extends Component {
                         {payerList}
                         <div className={`app__receipt-row ${payers.length > 0 ? '' : 'hide'}`}>
                             <p className="app__receipt-cell left">remaining</p>
-                            <p className={`app__receipt-cell ${remainingBill.toFixed(2) > 0 ? 'negative' : 'positive'} right`}>{`$${remainingBill.toFixed(2)}`}</p>
+                            <p className={`app__receipt-cell ${remainingBill.toFixed(2) > 0 ? 'negative' : 'positive'} right`}>
+                                {remainingBill > 0 ? `-$${remainingBill.toFixed(2)}` : `$${remainingBill.toFixed(2)}`}
+                            </p>
                             <p className="app__receipt-cell" />
                         </div>
                     </div>
@@ -165,11 +219,22 @@ class WhatDoIOwe extends Component {
 
                         <div className="app__payer-fields">
                             <FormField label="Payer Name">
-                                <input className="app__input" type="text" onChange={e => this.handleInputChange('payer', {name: e.target.value, amount: payer.amount})} value={payer.name} />
+                                <input
+                                    className="app__input"
+                                    onChange={e => this.handlePayerChange('name', e.target.value)}
+                                    type="text"
+                                    value={payer.name}
+                                />
                             </FormField>
 
                             <FormField label="Payer Amount">
-                                <input className="app__input" type="number" step="0.01" onChange={e => this.handleInputChange('payer', {name: payer.name, amount: e.target.value})} value={payer.amount} />
+                                <input
+                                    className="app__input"
+                                    onChange={e => this.handlePayerChange('amount', e.target.value)}
+                                    step="0.01"
+                                    type="text"
+                                    value={payer.amount}
+                                />
                             </FormField>
                         </div>
 

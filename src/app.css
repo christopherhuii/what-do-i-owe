@@ -24,7 +24,7 @@
   .app__placeholder {
     bottom: 0;
     font-size: .9em;
-    line-height: 2.2em;
+    line-height: 2.1em;
     opacity: .5;
     position: absolute;
     right: 10px;
@@ -32,7 +32,8 @@
   .app__edit-payer-container {
     margin: 1em; }
   .app__receipt-grid {
-    display: none; }
+    display: none;
+    margin: 1em 0; }
     .app__receipt-grid.show {
       display: block; }
   .app__receipt-row {
@@ -48,11 +49,18 @@
     flex: 1;
     font-size: .8em;
     letter-spacing: .5px;
+    margin: 5px 0;
     text-transform: uppercase; }
     .app__receipt-cell.negative {
       color: red; }
     .app__receipt-cell.positive {
       color: green; }
+    .app__receipt-cell.left {
+      text-align: left; }
+    .app__receipt-cell.right {
+      text-align: right; }
+  .app__table-action-btn + .app__table-action-btn {
+    padding-left: 10px; }
   .app input::-webkit-outer-spin-button,
   .app input::-webkit-inner-spin-button {
     -webkit-appearance: none;
