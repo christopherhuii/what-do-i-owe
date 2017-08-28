@@ -4,7 +4,8 @@ import React, { Component } from 'react';
 import math from 'mathjs';
 import './app.css';
 
-import FormField from './js/form-field';
+import FormInput from './js/form-input';
+import FormSelect from './js/form-select';
 import Modal from './js/modal';
 
 class WhatDoIOwe extends Component {
@@ -157,49 +158,41 @@ class WhatDoIOwe extends Component {
         <div className="app">
           <a href="/"><h1 className="app__header">what do i owe?</h1></a>
 
-          <FormField label="Total">
-            <input
-              className="app__input"
-              name="total"
-              onChange={this.handleNumberFieldChange}
-              step="0.01"
-              type="number"
-            />
-          </FormField>
+          <FormInput
+            label="Total"
+            onChange={this.handleNumberFieldChange}
+            name="total"
+            step={0.01}
+            type="number"
+            placeholder="$"
+          />
 
-          <FormField label="Tax">
-            <input
-              className="app__input"
-              name="tax"
-              onChange={this.handleNumberFieldChange}
-              step="0.01"
-              type="number"
-            />
-          </FormField>
+          <FormInput
+            label="Tax"
+            onChange={this.handleNumberFieldChange}
+            name="tax"
+            step={0.01}
+            type="number"
+            placeholder="$"
+          />
 
-          <FormField label="Is tip included?">
-            <select
-              className="app__input"
-              defaultValue=""
-              name="isTipIncluded"
-              onChange={this.handleTipChange}
-            >
-              <option value="true">Yes</option>
-              <option value="">No</option>
-            </select>
-          </FormField>
+          <FormSelect
+            label="Is tip included?"
+            defaultValue=""
+            name="isTipIncluded"
+            onChange={this.handleTipChange}
+            options={[{ text: 'Yes', value: true }, { text: 'No', value: '' }]}
+          />
 
-          <FormField label={isTipIncluded ? 'Included Tip' : 'Tip'}>
-            <input
-              className="app__input"
-              name="tip"
-              onChange={this.handleNumberFieldChange}
-              step="0.01"
-              type="number"
-              value={tip}
-            />
-            <span className="app__placeholder">{isTipIncluded ? '$' : '%'}</span>
-          </FormField>
+          <FormInput
+            label={isTipIncluded ? 'Included Tip ($)' : 'Tip (%)'}
+            onChange={this.handleNumberFieldChange}
+            name="tip"
+            step={0.01}
+            type="number"
+            placeholder={isTipIncluded ? '$' : '%'}
+            value={tip}
+          />
 
           <div className={`app__receipt-grid ${grandTotal ? 'show' : ''}`}>
             <div className={'app__receipt-row total-amount'}>
@@ -226,24 +219,17 @@ class WhatDoIOwe extends Component {
               <p className="app__edit-payer-heading">Edit Payer</p>
 
               <div className="app__payer-fields">
-                <FormField label="Payer Name">
-                  <input
-                    className="app__input"
-                    onChange={e => this.handlePayerChange('name', e.target.value)}
-                    type="text"
-                    value={payer.name}
-                  />
-                </FormField>
+                <FormInput
+                  label="Payer Name"
+                  onChange={e => this.handlePayerChange('name', e.target.value)}
+                  value={payer.name}
+                />
 
-                <FormField label="Payer Amount">
-                  <input
-                    className="app__input"
-                    onChange={e => this.handlePayerChange('amount', e.target.value)}
-                    step="0.01"
-                    type="text"
-                    value={payer.amount}
-                  />
-                </FormField>
+                <FormInput
+                  label="Payer Amount"
+                  onChange={e => this.handlePayerChange('amount', e.target.value)}
+                  value={payer.amount}
+                />
               </div>
 
               <button className="app__button" onClick={this.savePayer}>save</button>
