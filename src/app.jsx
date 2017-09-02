@@ -88,8 +88,8 @@ class WhatDoIOwe extends Component {
           editPayerIndex: -1,
           payers:
           prevState.editPayerIndex > -1
-            ? [...prevState.payers.slice(0, prevState.editPayerIndex), { name, amount: math.eval(amount) }, ...prevState.payers.slice(prevState.editPayerIndex + 1)]
-            : [...prevState.payers, { name, amount: math.eval(amount) }],
+            ? [...prevState.payers.slice(0, prevState.editPayerIndex), { name, amount }, ...prevState.payers.slice(prevState.editPayerIndex + 1)]
+            : [...prevState.payers, { name, amount }],
           showPayerModal: false
         };
       });
@@ -136,10 +136,10 @@ class WhatDoIOwe extends Component {
       const { isTipIncluded, total, tax, tip, grandTotal, payer, payers, showPayerModal } = this.state;
 
       let totalPaid = 0;
-      const subtotal = total - tax - (isTipIncluded ? tip : ((total - tax) * (tip / 100)));
+      const subtotal = total - tax - (isTipIncluded ? tip : 0);
       const payerList = payers.map((scopedPayer, i) => {
-        const payerAmount = parseFloat(scopedPayer.amount);
-        const amountWithTaxAndTip = payerAmount + ((payerAmount / subtotal) * tax) + (isTipIncluded ? (payerAmount / subtotal) * tip : payerAmount * (tip / 100));
+        const payerAmount = parseFloat(math.eval(scopedPayer.amount));
+        const amountWithTaxAndTip = payerAmount + ((payerAmount * (tax / subtotal))) + (isTipIncluded ? (payerAmount / subtotal) * tip : payerAmount * (tip / 100));
         totalPaid += amountWithTaxAndTip;
         return (
           <div className="app__receipt-row">
