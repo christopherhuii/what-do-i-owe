@@ -7,3 +7,10 @@
   font-size: .75em;
   margin-bottom: .5em;
   text-transform: uppercase; }
+
+.form-field__input, .form-field__select {
+  background-color: transparent;
+  border: 1px solid #000000;
+  box-sizing: border-box;
+  padding: 5px 10px;
+  width: 100%; }
