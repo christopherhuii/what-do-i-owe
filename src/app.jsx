@@ -29,7 +29,7 @@ class WhatDoIOwe extends Component {
     grandTotal: 0,
     payers: [],
     showPayerModal: false,
-    payer: { name: '', amount: 0 },
+    payer: { name: '', expressionAmount: 0, evalAmount: 0 },
     editPayerIndex: -1
   }
 
@@ -53,12 +53,21 @@ class WhatDoIOwe extends Component {
       });
     }
 
-    handlePayerChange = (name, value) => {
-      this.setState((prevState) => {
-        return {
-          payer: { ...prevState.payer, [name]: value }
-        };
-      });
+    handlePayerNameChange = (e) => {
+      e.persist();
+      this.setState(prevState => ({
+        payer: { ...prevState.payer, name: e.target.value }
+      }));
+    }
+
+    handlePayerAmountChange = (e) => {
+      e.persist();
+      this.setState(prevState => ({
+        payer: {
+          ...prevState.payer,
+          expressionAmount: e.target.value
+        }
+      }));
     }
 
     handleGrandTotalChange = () => {
@@ -76,41 +85,42 @@ class WhatDoIOwe extends Component {
     closePayerModal = () => {
       this.setState({
         showPayerModal: false,
-        payer: { name: '', amount: 0 }
+        payer: { name: '', expressionAmount: 0, evalAmonut: 0 }
       });
     }
 
     savePayer = () => {
-      const { name, amount } = this.state.payer;
-      this.setState((prevState) => {
-        return {
-          payer: { name: '', amount: 0 },
-          editPayerIndex: -1,
-          payers:
-          prevState.editPayerIndex > -1
-            ? [...prevState.payers.slice(0, prevState.editPayerIndex), { name, amount }, ...prevState.payers.slice(prevState.editPayerIndex + 1)]
-            : [...prevState.payers, { name, amount }],
-          showPayerModal: false
-        };
-      });
+      const { isTipIncluded, tax, total, tip, payer } = this.state;
+      const subtotal = total - tax - (isTipIncluded ? tip : 0);
+      const payerAmount = parseFloat(math.eval(payer.expressionAmount));
+      const amountWithTaxAndTip = payerAmount + ((payerAmount * (tax / subtotal))) + (isTipIncluded ? (payerAmount / subtotal) * tip : payerAmount * (tip / 100));
+      this.setState(prevState => ({
+        payer: { name: '', expressionAmount: 0, evalAmount: 0 },
+        editPayerIndex: -1,
+        payers:
+        prevState.editPayerIndex > -1
+          ? [
+            ...prevState.payers.slice(0, prevState.editPayerIndex),
+            { name: payer.name, expressionAmount: payer.expressionAmount, evalAmount: amountWithTaxAndTip },
+            ...prevState.payers.slice(prevState.editPayerIndex + 1)
+          ]
+          : [...prevState.payers, { name: payer.name, expressionAmount: payer.expressionAmount, evalAmount: amountWithTaxAndTip }],
+        showPayerModal: false
+      }));
     }
 
-    editPayer = (payerIndex) => {
-      this.setState((prevState) => {
-        return {
-          payer: prevState.payers[payerIndex],
-          editPayerIndex: payerIndex,
-          showPayerModal: true
-        };
-      });
+    editPayer = payerIndex => () => {
+      this.setState(prevState => ({
+        payer: prevState.payers[payerIndex],
+        editPayerIndex: payerIndex,
+        showPayerModal: true
+      }));
     }
 
-    deletePayer = (index) => {
-      this.setState((prevState) => {
-        return {
-          payers: prevState.payers.filter((_, i) => i !== index)
-        };
-      });
+    deletePayer = payerIndex => () => {
+      this.setState(prevState => ({
+        payers: prevState.payers.filter((_, i) => i !== payerIndex)
+      }));
     }
 
     handleNumberFieldChange = (e) => {
@@ -132,26 +142,22 @@ class WhatDoIOwe extends Component {
       return 0;
     }
 
-    render() {
-      const { isTipIncluded, total, tax, tip, grandTotal, payer, payers, showPayerModal } = this.state;
+    renderPayer = (payer, index) => (
+      <div className="app__receipt-row">
+        <p className="app__receipt-cell left">{payer.name}</p>
+        <p className="app__receipt-cell positive right">{`$${payer.evalAmount.toFixed(2)}`}</p>
+        <p className="app__receipt-cell right">
+          <span className="app__table-action-btn" onClick={this.editPayer(index)}>&#x270E;</span>
+          <span className="app__table-action-btn" onClick={this.deletePayer(index)}>&#10005;</span>
+        </p>
+      </div>
+    )
 
-      let totalPaid = 0;
-      const subtotal = total - tax - (isTipIncluded ? tip : 0);
-      const payerList = payers.map((scopedPayer, i) => {
-        const payerAmount = parseFloat(math.eval(scopedPayer.amount));
-        const amountWithTaxAndTip = payerAmount + ((payerAmount * (tax / subtotal))) + (isTipIncluded ? (payerAmount / subtotal) * tip : payerAmount * (tip / 100));
-        totalPaid += amountWithTaxAndTip;
-        return (
-          <div className="app__receipt-row">
-            <p className="app__receipt-cell left">{scopedPayer.name}</p>
-            <p className="app__receipt-cell positive right">{`$${amountWithTaxAndTip.toFixed(2)}`}</p>
-            <p className="app__receipt-cell right">
-              <span className="app__table-action-btn" onClick={() => this.editPayer(i)}>&#x270E;</span>
-              <span className="app__table-action-btn" onClick={() => this.deletePayer(i)}>&#10005;</span>
-            </p>
-          </div>
-        );
-      });
+    render() {
+      const { isTipIncluded, tip, grandTotal, payer, payers, showPayerModal } = this.state;
+
+      const payerList = payers.map(this.renderPayer);
+      const totalPaid = payers.reduce((payerTotal = 0, payerObj) => payerTotal + payerObj.evalAmount, 0);
       const remainingBill = grandTotal - totalPaid;
 
       return (
@@ -221,14 +227,14 @@ class WhatDoIOwe extends Component {
               <div className="app__payer-fields">
                 <FormInput
                   label="Payer Name"
-                  onChange={e => this.handlePayerChange('name', e.target.value)}
+                  onChange={this.handlePayerNameChange}
                   value={payer.name}
                 />
 
                 <FormInput
                   label="Payer Amount"
-                  onChange={e => this.handlePayerChange('amount', e.target.value)}
-                  value={payer.amount}
+                  onChange={this.handlePayerAmountChange}
+                  value={payer.expressionAmount}
                 />
               </div>
 
